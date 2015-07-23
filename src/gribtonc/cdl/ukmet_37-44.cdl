@@ -1,0 +1,354 @@
+netcdf ukmet{           
+
+dimensions:
+        record         = UNLIMITED ; // (reference time, forecast time)
+        lat            = 145 ;       // latitude
+        lon            = 289 ;       // longitude
+        level3         = 3 ;         // isobaric levels
+        level5         = 5 ;         // isobaric levels
+        level10        = 10 ;        // isobaric levels
+        level11        = 11 ;        // isobaric levels
+        valtime_offset = 11 ;        // number of offset times
+        nmodels        = 2 ;         // number of models
+        ngrids         = 1 ;         // number of grids
+        nav            = 1 ;         // for navigation
+        time_len       = 21 ;        // string length for datetime strings
+        nav_len        = 100 ;       // max string length for navigation strings
+
+
+variables:
+
+        double reftime(record) ;	// reference time of the model
+               reftime:long_name = "reference time" ;
+               reftime:units = "hours since 1992-1-1" ;
+
+        double valtime(record) ;	// forecast time ("valid" time)
+               valtime:long_name = "valid time" ;
+               valtime:units = "hours since 1992-1-1" ;
+
+        :record = "reftime, valtime" ;	// "dimension attribute" -- means
+                                        // (reftime, valtime) uniquely
+                                        // determine record
+
+        char   datetime(record, time_len) ; // derived from reftime
+               datetime:long_name = "reference date and time" ;
+               // units YYYY-MM-DD hh:mm:ssZ  (ISO 8601)
+
+        double valtime_offset(valtime_offset) ; // valtime - reftime
+               valtime_offset:long_name = "hours from reference time" ;
+               valtime_offset:units = "hours" ;
+
+        char   forecasttime(record, time_len) ; // derived from valtime
+               forecasttime:long_name = "forecast date and time" ;
+               // units YYYY-MM-DD hh:mm:ssZ  (ISO 8601)
+
+        float  level3(level3) ;
+               level3:long_name = "isobaric levels" ;
+               level3:units = "hectopascals" ;
+
+        float  level5(level5) ;
+               level5:long_name = "isobaric levels" ;
+               level5:units = "hectopascals" ;
+
+        float  level10(level10) ;
+               level10:long_name = "isobaric levels" ;
+               level10:units = "hectopascals" ;
+
+        float  level11(level11) ;
+               level11:long_name = "isobaric levels" ;
+               level11:units = "hectopascals" ;
+
+        // The following lat and lon coordinate variables are redundant,
+        // since the navigation variables provide the necessary information.
+        // The extra information is included here for human readability.
+
+        float  lat(lat) ;
+               lat:long_name = "latitude" ;
+               lat:units = "degrees_north" ;
+
+        float  lon(lon) ;
+               lon:long_name = "longitude" ;
+               lon:units = "degrees_east" ;
+
+        long   model_id(nmodels) ;
+               model_id:long_name = "generating process ID number" ;
+
+        // navigation variables all use nav dimension
+
+        char   nav_model(nav, nav_len) ;        // navigation parameterization
+               nav_model:long_name = "navigation model name" ;
+
+        int    grid_type_code(nav) ;
+               grid_type_code:long_name = "GRIB-1 GDS data representation type" ;
+
+        char   grid_type(nav, nav_len) ;
+               grid_type:long_name = "GRIB-1 grid type" ;
+
+        char   grid_name(nav, nav_len) ;
+               grid_name:long_name = "grid name" ;
+
+        int    grid_center(nav) ;
+               grid_center:long_name = "GRIB-1 originating center ID" ;
+
+        int    grid_number(nav, ngrids) ;
+               grid_number:long_name = "GRIB-1 catalogued grid numbers" ;
+               grid_number:_FillValue = -9999 ;
+
+        char   i_dim(nav, nav_len) ;
+               i_dim:long_name = "longitude dimension name" ;
+
+        char   j_dim(nav, nav_len) ;
+               j_dim:long_name = "latitude dimension name" ;
+
+        int    Ni(nav) ;
+               Ni:long_name = "number of points along a latitude circle" ;
+
+        int    Nj(nav) ;
+               Nj:long_name = "number of points along a longitude circle" ;
+
+        float  La1(nav) ;
+               La1:long_name = "latitude of first grid point" ;
+               La1:units = "degrees_north" ;
+
+        float  Lo1(nav) ;
+               Lo1:long_name = "longitude of first grid point" ;
+               Lo1:units = "degrees_east" ;
+
+        float  La2(nav) ;
+               La2:long_name = "latitude of last grid point" ;
+               La2:units = "degrees_north" ;
+
+        float  Lo2(nav) ;
+               Lo2:long_name = "longitude of last grid point" ;
+               Lo2:units = "degrees_east" ;
+
+        float  Di(nav) ;
+               Di:long_name = "longitudinal direction increment" ;
+               Di:units = "degrees" ;
+
+        float  Dj(nav) ;
+               Dj:long_name = "latitudinal direction increment" ;
+               Dj:units = "degrees" ;
+
+        byte   ResCompFlag(nav) ;
+               ResCompFlag:long_name = "resolution and component flags" ;
+
+        // end of navigation variables
+
+        // 2D fields
+
+        float  Z_maxwind(record,lat,lon) ;
+               Z_maxwind:long_name = "Geopotential height at Maximum Wind" ;
+               Z_maxwind:GRIB_parameter_number = 7 ;
+               Z_maxwind:GRIB_level_flag = 6 ;
+               Z_maxwind:units = "gp m" ;
+               Z_maxwind:_FillValue = -9999.f ;
+               Z_maxwind:navigation = "nav" ;
+
+        float  Z_trop(record,lat,lon) ;
+               Z_trop:long_name = "Geopotential height at Tropopause" ;
+               Z_trop:GRIB_parameter_number = 7 ;
+               Z_trop:GRIB_level_flag = 7 ;
+               Z_trop:units = "gp m" ;
+               Z_trop:_FillValue = -9999.f ;
+               Z_trop:navigation = "nav" ;
+
+        float  P_msl(record,lat,lon) ;
+               P_msl:long_name = "Pressure reduced to MSL at Mean Sea" ;
+               P_msl:GRIB_parameter_number = 2 ;
+               P_msl:GRIB_level_flag = 102 ;
+               P_msl:units = "Pa" ;
+               P_msl:_FillValue = -9999.f ;
+               P_msl:navigation = "nav" ;
+
+        float  T_sfc(record,lat,lon) ;
+               T_sfc:long_name = "Temperature at Surface" ;
+               T_sfc:GRIB_parameter_number = 11 ;
+               T_sfc:GRIB_level_flag = 1 ;
+               T_sfc:units = "degK" ;
+               T_sfc:_FillValue = -9999.f ;
+               T_sfc:navigation = "nav" ;
+
+        float  PRECIP(record,lat,lon) ;
+               PRECIP:long_name = "Total precipitation at Surface" ;
+               PRECIP:GRIB_parameter_number = 61 ;
+               PRECIP:GRIB_level_flag = 1 ;
+               PRECIP:units = "kg/m2" ;
+               PRECIP:_FillValue = -9999.f ;
+               PRECIP:navigation = "nav" ;
+
+        float  u_maxwind(record,lat,lon) ;
+               u_maxwind:long_name = "u-component of wind at Maximum Wind" ;
+               u_maxwind:GRIB_parameter_number = 33 ;
+               u_maxwind:GRIB_level_flag = 6 ;
+               u_maxwind:units = "m/s" ;
+               u_maxwind:_FillValue = -9999.f ;
+               u_maxwind:navigation = "nav" ;
+
+        float  v_maxwind(record,lat,lon) ;
+               v_maxwind:long_name = "v-component of wind at Maximum Wind" ;
+               v_maxwind:GRIB_parameter_number = 34 ;
+               v_maxwind:GRIB_level_flag = 6 ;
+               v_maxwind:units = "m/s" ;
+               v_maxwind:_FillValue = -9999.f ;
+               v_maxwind:navigation = "nav" ;
+
+        float  u_sfc(record,lat,lon) ;
+               u_sfc:long_name = "u-component of wind at Surface" ;
+               u_sfc:GRIB_parameter_number = 33 ;
+               u_sfc:GRIB_level_flag = 1 ;
+               u_sfc:units = "m/s" ;
+               u_sfc:_FillValue = -9999.f ;
+               u_sfc:navigation = "nav" ;
+
+        float  v_sfc(record,lat,lon) ;
+               v_sfc:long_name = "v-component of wind at Surface" ;
+               v_sfc:GRIB_parameter_number = 34 ;
+               v_sfc:GRIB_level_flag = 1 ;
+               v_sfc:units = "m/s" ;
+               v_sfc:_FillValue = -9999.f ;
+               v_sfc:navigation = "nav" ;
+
+        float  T_trop(record,lat,lon) ;
+               T_trop:long_name = "Temperature at Tropopause" ;
+               T_trop:GRIB_parameter_number = 11 ;
+               T_trop:GRIB_level_flag = 7 ;
+               T_trop:units = "degK" ;
+               T_trop:_FillValue = -9999.f ;
+               T_trop:navigation = "nav" ;
+
+        // 3D fields
+
+        float  w(record,level3,lat,lon) ;
+               w:long_name = "Geometric vertical velocity at Isobaric" ;
+               w:GRIB_parameter_number = 40 ;
+               w:GRIB_level_flag = 100 ;
+               w:units = "m/s" ;
+               w:_FillValue = -9999.f ;
+               w:navigation = "nav" ;
+
+        float  Z(record,level10,lat,lon) ;
+               Z:long_name = "Geopotential height at Isobaric" ;
+               Z:GRIB_parameter_number = 7 ;
+               Z:GRIB_level_flag = 100 ;
+               Z:units = "gp m" ;
+               Z:_FillValue = -9999.f ;
+               Z:navigation = "nav" ;
+
+        float  RH(record,level5,lat,lon) ;
+               RH:long_name = "Relative humidity at Isobaric" ;
+               RH:GRIB_parameter_number = 52 ;
+               RH:GRIB_level_flag = 100 ;
+               RH:units = "percent" ;
+               RH:_FillValue = -9999.f ;
+               RH:navigation = "nav" ;
+
+        float  T(record,level11,lat,lon) ;
+               T:long_name = "Temperature at Isobaric" ;
+               T:GRIB_parameter_number = 11 ;
+               T:GRIB_level_flag = 100 ;
+               T:units = "degK" ;
+               T:_FillValue = -9999.f ;
+               T:navigation = "nav" ;
+
+        float  u(record,level11,lat,lon) ;
+               u:long_name = "u-component of wind at Isobaric" ;
+               u:GRIB_parameter_number = 33 ;
+               u:GRIB_level_flag = 100 ;
+               u:units = "m/s" ;
+               u:_FillValue = -9999.f ;
+               u:navigation = "nav" ;
+
+        float  v(record,level11,lat,lon) ;
+               v:long_name = "v-component of wind at Isobaric" ;
+               v:GRIB_parameter_number = 34 ;
+               v:GRIB_level_flag = 100 ;
+               v:units = "m/s" ;
+               v:_FillValue = -9999.f ;
+               v:navigation = "nav" ;
+
+// global attributes
+ :history = "2013-05-07 10:00:00 - created by hand" ; 
+ :title = "U.K. Met Office - Exeter (RSMC) Forecast Product" ;
+ :Conventions = "NUWG" ;
+ :GRIB_reference = "Office Note 388 GRIB" ;
+ :GRIB_URL = "http://www.nco.ncep.noaa.gov/pmb/docs/on388/" ;
+ :version = 1.0 ;
+
+data:
+
+ level3  =         850.0, 700.0, 500.0 ;
+ level5  = 1000.0, 850.0, 700.0, 600.0, 500.0 ;
+ level10 = 1000.0, 850.0, 700.0, 500.0, 400.0, 300.0, 250.0, 200.0, 150.0, 100.0 ;
+ level11 = 1000.0, 850.0, 700.0, 600.0, 500.0, 400.0, 300.0, 250.0, 200.0, 150.0, 100.0 ;
+ model_id = 45 ;
+ valtime_offset = 0, 6, 12, 18, 24, 30, 36, 42, 48, 60, 72 ;
+
+
+// Navigation
+ nav_model      = "GRIB1" ;
+ grid_type_code = 0 ;
+ grid_type      = "Latitude/Longitude" ;
+ grid_name      = "UKMET 1.25 x 1.25 degree Thinned grid" ;
+ grid_center    = 74 ;
+ grid_number    = 255 ;
+ model_id       = 15, 45 ;
+ i_dim          = "lon" ;
+ j_dim          = "lat" ;
+ Ni             = 289 ;
+ Nj             = 145 ;
+ La1            =  -90.00 ;
+ La2            =   90.00 ;
+ Lo1            = -120.00 ;
+ Lo2            =  240.00 ;
+ Di             = 1.25 ;
+ Dj             = 1.25 ;
+ ResCompFlag    = 128 ;
+
+ lon = -120.00,-118.75,-117.50,-116.25,-115.00,-113.75,-112.50,-111.25,-110.00,-108.75,
+       -107.50,-106.25,-105.00,-103.75,-102.50,-101.25,-100.00,-98.75,-97.50,-96.25,
+       -95.00,-93.75,-92.50,-91.25,-90.00,-88.75,-87.50,-86.25,-85.00,-83.75,
+       -82.50,-81.25,-80.00,-78.75,-77.50,-76.25,-75.00,-73.75,-72.50,-71.25,
+       -70.00,-68.75,-67.50,-66.25,-65.00,-63.75,-62.50,-61.25,-60.00,-58.75,
+       -57.50,-56.25,-55.00,-53.75,-52.50,-51.25,-50.00,-48.75,-47.50,-46.25,
+       -45.00,-43.75,-42.50,-41.25,-40.00,-38.75,-37.50,-36.25,-35.00,-33.75,
+       -32.50,-31.25,-30.00,-28.75,-27.50,-26.25,-25.00,-23.75,-22.50,-21.25,
+       -20.00,-18.75,-17.50,-16.25,-15.00,-13.75,-12.50,-11.25,-10.00,-8.75,
+       -7.50,-6.25,-5.00,-3.75,-2.50,-1.25,0.00,1.25,2.50,3.75,
+       5.00,6.25,7.50,8.75,10.00,11.25,12.50,13.75,15.00,16.25,
+       17.50,18.75,20.00,21.25,22.50,23.75,25.00,26.25,27.50,28.75,
+       30.00,31.25,32.50,33.75,35.00,36.25,37.50,38.75,40.00,41.25,
+       42.50,43.75,45.00,46.25,47.50,48.75,50.00,51.25,52.50,53.75,
+       55.00,56.25,57.50,58.75,60.00,61.25,62.50,63.75,65.00,66.25,
+       67.50,68.75,70.00,71.25,72.50,73.75,75.00,76.25,77.50,78.75,
+       80.00,81.25,82.50,83.75,85.00,86.25,87.50,88.75,90.00,91.25,
+       92.50,93.75,95.00,96.25,97.50,98.75,100.00,101.25,102.50,103.75,
+       105.00,106.25,107.50,108.75,110.00,111.25,112.50,113.75,115.00,116.25,
+       117.50,118.75,120.00,121.25,122.50,123.75,125.00,126.25,127.50,128.75,
+       130.00,131.25,132.50,133.75,135.00,136.25,137.50,138.75,140.00,141.25,
+       142.50,143.75,145.00,146.25,147.50,148.75,150.00,151.25,152.50,153.75,
+       155.00,156.25,157.50,158.75,160.00,161.25,162.50,163.75,165.00,166.25,
+       167.50,168.75,170.00,171.25,172.50,173.75,175.00,176.25,177.50,178.75,
+       180.00,181.25,182.50,183.75,185.00,186.25,187.50,188.75,190.00,191.25,
+       192.50,193.75,195.00,196.25,197.50,198.75,200.00,201.25,202.50,203.75,
+       205.00,206.25,207.50,208.75,210.00,211.25,212.50,213.75,215.00,216.25,
+       217.50,218.75,220.00,221.25,222.50,223.75,225.00,226.25,227.50,228.75,
+       230.00,231.25,232.50,233.75,235.00,236.25,237.50,238.75,240.00 ;
+
+ lat = -90.00,-88.75,-87.50,-86.25,-85.00,-83.75,-82.50,-81.25,-80.00,-78.75,
+       -77.50,-76.25,-75.00,-73.75,-72.50,-71.25,-70.00,-68.75,-67.50,-66.25,
+       -65.00,-63.75,-62.50,-61.25,-60.00,-58.75,-57.50,-56.25,-55.00,-53.75,
+       -52.50,-51.25,-50.00,-48.75,-47.50,-46.25,-45.00,-43.75,-42.50,-41.25,
+       -40.00,-38.75,-37.50,-36.25,-35.00,-33.75,-32.50,-31.25,-30.00,-28.75,
+       -27.50,-26.25,-25.00,-23.75,-22.50,-21.25,-20.00,-18.75,-17.50,-16.25,
+       -15.00,-13.75,-12.50,-11.25,-10.00,-8.75,-7.50,-6.25,-5.00,-3.75,
+       -2.50,-1.25,0.00,1.25,2.50,3.75,5.00,6.25,7.50,8.75,
+       10.00,11.25,12.50,13.75,15.00,16.25,17.50,18.75,20.00,21.25,
+       22.50,23.75,25.00,26.25,27.50,28.75,30.00,31.25,32.50,33.75,
+       35.00,36.25,37.50,38.75,40.00,41.25,42.50,43.75,45.00,46.25,
+       47.50,48.75,50.00,51.25,52.50,53.75,55.00,56.25,57.50,58.75,
+       60.00,61.25,62.50,63.75,65.00,66.25,67.50,68.75,70.00,71.25,
+       72.50,73.75,75.00,76.25,77.50,78.75,80.00,81.25,82.50,83.75,
+       85.00,86.25,87.50,88.75,90.00 ;
+
+}

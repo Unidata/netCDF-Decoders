@@ -1,0 +1,196 @@
+netcdf mrf-a{		// Medium Range Forecasts
+
+
+dimensions:
+        record = UNLIMITED ;  // (reference time, forecast time)
+        lat = 73 ;            // latitude
+        lon = 73 ;            // longitude
+        level = 1 ;           // isobaric levels
+	fhg = 1 ;	      // fixed height above ground level
+        time_len = 21 ;       // string length for datetime strings
+        valtime_offset = 8 ;  // number of offset times
+        nmodels = 3 ;         // number of models
+        ngrids = 4 ;          // number of grids
+        nav = 1 ;             // for navigation
+        nav_len = 100 ;       // max string length for navigation strings
+
+variables:
+
+        double reftime(record) ;	// reference time of the model
+               reftime:long_name = "reference time" ;
+               reftime:units = "hours since 1992-1-1" ;
+
+        double valtime(record) ;	// forecast time ("valid" time)
+               valtime:long_name = "valid time" ;
+               valtime:units = "hours since 1992-1-1" ;
+
+        :record = "reftime, valtime" ;	// "dimension attribute" -- means
+                                        // (reftime, valtime) uniquely
+                                        // determine record
+
+        char   datetime(record, time_len) ; // derived from reftime
+               datetime:long_name = "reference date and time" ;
+               // units YYYY-MM-DD hh:mm:ssZ  (ISO 8601)
+
+        double valtime_offset(valtime_offset) ; // valtime - reftime
+               valtime_offset:long_name = "hours from reference time" ;
+               valtime_offset:units = "hours" ;
+
+        char   forecasttime(record, time_len) ; // derived from valtime
+               forecasttime:long_name = "forecast date and time" ;
+               // units YYYY-MM-DD hh:mm:ssZ  (ISO 8601)
+
+        float  level(level) ;
+               level:long_name = "isobaric level" ;
+               level:units = "hectopascals" ;
+
+        float  fhg(fhg) ;
+               fhg:long_name = "fixed height above ground" ;
+               fhg:units = "meters" ;
+
+        // The following lat and lon coordinate variables are redundant,
+        // since the navigation variables provide the necessary information.
+        // The extra information is included here for human readability.
+
+        float  lat(lat) ;
+               lat:long_name = "latitude" ;
+               lat:units = "degrees_north" ;
+
+        float  lon(lon) ;
+               lon:long_name = "longitude" ;
+               lon:units = "degrees_east" ;
+
+        long   model_id(nmodels) ;
+               model_id:long_name = "generating process ID number" ;
+
+        // navigation variables all use nav dimension
+
+        char   nav_model(nav, nav_len) ;        // navigation parameterization
+               nav_model:long_name = "navigation model name" ;
+
+        int    grid_type_code(nav) ;
+               grid_type_code:long_name = "GRIB-1 GDS data representation type" ;
+
+        char   grid_type(nav, nav_len) ;
+               grid_type:long_name = "GRIB-1 grid type" ;
+
+        char   grid_name(nav, nav_len) ;
+               grid_name:long_name = "grid name" ;
+
+        int    grid_center(nav) ;
+               grid_center:long_name = "GRIB-1 originating center ID" ;
+
+        int    grid_number(nav, ngrids) ;
+               grid_number:long_name = "GRIB-1 catalogued grid numbers" ;
+               grid_number:_FillValue = -9999 ;
+
+        char   i_dim(nav, nav_len) ;
+               i_dim:long_name = "longitude dimension name" ;
+
+        char   j_dim(nav, nav_len) ;
+               j_dim:long_name = "latitude dimension name" ;
+
+        int    Ni(nav) ;
+               Ni:long_name = "number of points along a latitude circle" ;
+
+        int    Nj(nav) ;
+               Nj:long_name = "number of points along a longitude circle" ;
+
+        float  La1(nav) ;
+               La1:long_name = "latitude of first grid point" ;
+               La1:units = "degrees_north" ;
+
+        float  Lo1(nav) ;
+               Lo1:long_name = "longitude of first grid point" ;
+               Lo1:units = "degrees_east" ;
+
+        float  La2(nav) ;
+               La2:long_name = "latitude of last grid point" ;
+               La2:units = "degrees_north" ;
+
+        float  Lo2(nav) ;
+               Lo2:long_name = "longitude of last grid point" ;
+               Lo2:units = "degrees_east" ;
+
+        float  Di(nav) ;
+               Di:long_name = "longitudinal direction increment" ;
+               Di:units = "degrees" ;
+
+        float  Dj(nav) ;
+               Dj:long_name = "latitudinal direction increment" ;
+               Dj:units = "degrees" ;
+
+        byte   ResCompFlag(nav) ;
+               ResCompFlag:long_name = "resolution and component flags" ;
+
+        // end of navigation variables
+
+        //float  Z(record,level,lat,lon) ;
+               //Z:long_name = "Geopotential height at isobaric levels" ;
+               //Z:GRIB_parameter_number = 7 ;
+               //Z:GRIB_level_flag = 100 ;
+               //Z:units = "gp m" ;
+               //Z:_FillValue = -9999.f ;
+               //Z:navigation = "nav" ;
+
+        float  T_fhg(record,fhg,lat,lon) ;
+               T_fhg:long_name = "Temperature at fixed height above ground" ;
+               T_fhg:standard_name = "air_temperature" ;
+               T_fhg:units = "degK" ;
+               T_fhg:GRIB_parameter_number = 11 ;
+               T_fhg:GRIB_level_flag = 105 ;
+               T_fhg:_FillValue = -9999.f ;
+               T_fhg:navigation = "nav" ;
+
+// global attributes
+               :history = "2003-04-02 16:23:24 - created by gribtocdl" ; 
+               :title = "Medium Range Forecasts" ;
+               :Conventions = "NUWG" ;
+               :GRIB_reference = "Office Note 388 GRIB" ;
+               :GRIB_URL = "http://www.nco.ncep.noaa.gov/pmb/docs/on388/" ;
+               :version = 1.0 ;
+
+data:
+
+ level = 1000 ;
+ fhg = 2.0 ;
+ model_id = 78, 80, 94;
+ valtime_offset = 84, 96, 108, 132, 144, 120, 192, 240 ;
+
+ // Navigation
+ nav_model = "GRIB1" ;
+ grid_type_code = 0 ;
+ grid_type = "Latitude/Longitude" ;
+ grid_name = "Global 5.0 x 2.5 degree grid" ;
+ grid_center = 7 ;   // NCEP
+ grid_number = 21, 22, 23, 24 ;
+ i_dim = "lon" ;
+ j_dim = "lat" ;
+ Ni = 73 ;
+ Nj = 73 ;
+ La1 = -90.0 ;
+ Lo1 = -180.0 ;
+ La2 = 90.0 ;
+ Lo2 = 180.0 ;
+ Di = 5.0 ;
+ Dj = 2.5 ;
+ ResCompFlag = 136 ;
+
+ lon = -180,-175,-170,-165,-160,-155,-150,-145,-140,-135,-130,-125,
+       -120,-115,-110,-105,-100, -95, -90, -85, -80, -75, -70, -65,
+        -60, -55, -50, -45, -40, -35, -30, -25, -20, -15, -10,  -5,
+          0,   5,  10,  15,  20,  25,  30,  35,  40,  45,  50,  55,
+         60,  65,  70,  75,  80,  85,  90,  95, 100, 105, 110, 115,
+        120, 125, 130, 135, 140, 145, 150, 155, 160, 165, 170, 175, 180 ;
+
+ lat = -90.0,-87.5,-85.0,-82.5,-80.0,-77.5,-75.0,-72.5,
+       -70.0,-67.5,-65.0,-62.5,-60.0,-57.5,-55.0,-52.5,
+       -50.0,-47.5,-45.0,-42.5,-40.0,-37.5,-35.0,-32.5,
+       -30.0,-27.5,-25.0,-22.5,-20.0,-17.5,-15.0,-12.5,
+       -10.0, -7.5, -5.0, -2.5,  0.0,  2.5,  5.0,  7.5,
+        10.0, 12.5, 15.0, 17.5, 20.0, 22.5, 25.0, 27.5,
+        30.0, 32.5, 35.0, 37.5, 40.0, 42.5, 45.0, 47.5,
+        50.0, 52.5, 55.0, 57.5, 60.0, 62.5, 65.0, 67.5,
+        70.0, 72.5, 75.0, 77.5, 80.0, 82.5, 85.0, 87.5, 90.0 ;
+
+}

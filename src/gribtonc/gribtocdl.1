@@ -1,0 +1,105 @@
+'\"
+'\" $Id: gribtocdl.1,v 1.3 2003/02/27 21:47:47 rkambic Exp $
+.TH GRIBTOCDL 1 "31 May 2002"
+.SH NAME
+gribtocdl - create netCDF CDL-file from GRIB dataset
+.SH SYNOPSIS
+.HP
+.ft B
+gribtocdl
+.nh
+\%[-v]
+\%[-g\ \fItabfile\fP]
+\%[-q\ \fIqspecs\fP]
+\%\fIgribfiles\fP
+.hy
+.ft
+.SH DESCRIPTION
+.LP
+This program decodes GRIB products and generates to stdout the 
+corresponding CDL 
+code that can be used in \fBgribtonc\fP(1) to convert the GRIB products
+to netCDF format. 
+The default parameter translation is made according to a definition by UCAR,
+but the user may supply specific translations in a separate file by the
+-g tabfile option. The user-supplied translations will override the default
+ones. 
+.LP
+.SH OPTIONS 
+.TP
+.B -v
+Verbose, reports decoding steps to stderr.
+.TP
+.BI \-g " tabfile"
+Use GRIB-netcdf translation defined in this file. The format of this file
+is described below.
+.TP
+.BI \-q " qspecs"
+Specification for how to expand so-called quasi-regular or thinned grids
+into rectangular grids.  This argument is a
+comma-delimited text string that specifies the method of interpolation used
+(currently \fBlin\fP for linear or \fBcub\fP for cubic), and the latitude
+and longitude
+increments in degrees for the resulting grid (e.g. \fBdlat=2.5,dlon=5.0\fP).
+
+.SH FORMAT OF GRIB TO NETCDF TRANSLATION TABLE
+.LP
+The format of the translation table is as follows:
+Each line contains
+.RS +4
+.nf 
+GRIB parameter number
+netCDF parameter name (cannot start with digit, [A-Za-z0-9_] only )
+netCDF long description
+netCDF units
+An optional comment
+.fi
+.RE
+
+These are all separated by semicolon (";"). To comment a whole line, 
+put any letter or special character (i.e. not a digit) in front of it.
+Trailing spaces are ignored before each semicolon, but not after.
+The GRIB number may have spaces in front.
+Parameters found in the separate file take presidence over the 
+default parameter table, 
+those not listed in the separate file are unchanged.
+All parameters will be named with a level suffix in addition to the name
+assigned in the separate file.
+
+.SH EXAMPLE
+The command
+.RS +4
+.nf
+gribtocdl -v -g my.tab sst.grib > sst.cdl
+.fi
+.RE
+
+will decode the products in sst.grib and generate the corresponding CDL
+code into file sst.cdl. 
+The file my.tab contains a specific conversion table to be used when
+naming a parameter from GRIB.  
+Later the GRIB file may be converted to netCDF
+by using gribtonc:
+.RS +4
+.nf
+gribtonc -v -g my.tab sst.cdl sst.nc < sst.grib
+.fi
+.RE
+
+The file my.tab looks like this:
+.RS +4
+.nf
+Grib;netCDF;long name               ;units;comments
+ 31 ;CI    ;Sea-ice cover           ;none ;(0-1)
+ 34 ;SSTK  ;Sea surface temperature ;K    ;
+151 ;MSL   ;Mean sea-level pressure ;Pa   ;
+167 ;T2M   ;2 metre temperature     ;K    ;
+.fi
+.RE
+.SH "SEE ALSO"
+gribdump(1), gribtonc(1), netcdf(3), udunits(3)
+.SH DIAGNOSTICS
+Error messages and log messages are written to stderr.
+
+
+

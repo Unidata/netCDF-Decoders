@@ -1,0 +1,20 @@
+ cnt mdl grd prm    lvlf lev1 lev2  trf tr0 tr1 bits bms gds   npts header
+   7  86 211   7    isob 1000    0    0   0   0    9   1   1   6045 YHQA99 KWBC 211500    0
+   7  86 211  59     sfc    0    0    0  12   0   10   1   1   6045 YJQC98 KWBC 220000    0
+   7  77 211   7    isob 1000    0    0   0   0    9   0   0   6045 YHQA99 KWBC 211200    0
+   7  77 211 131    liso   50  100    0  12   0    9   0   0   6045 YXQC50 KWBC 220000    0
+   7  10  21  33     sfc    0    0    0  12   0    9   1   0   1369 HUAC98 KWBC 211200    0
+   7  10  24  34     sfc    0    0    0  72   0    9   1   0   1369 HVDK98 KWBC 211200    0
+   7  83 211  39    isob  100    0    0   0   0    5   0   0   6045 YOQA10 KWBC 220000    0
+   7  83 211 131    liso   50  100    0  48   0    9   0   0   6045 YXQI50 KWBC 220000    0
+   7  39 211   2     msl    0    0    0  48   0   12   0   0   6045 YPQI91 KWBC 211200    0
+   7  39 211  61     sfc    0    0    4  36  48    9   0   0   6045 YEQI98 KWBC 211200    0
+   7  25  61  66     sfc    0    0    0   0   0    1   0   0   4186 HSTA98 KWBC 181200    0
+   7  25  62  66     sfc    0    0    0   0   0    1   0   0   4186 HSUA98 KWBC 181200    0
+   7  44  21  80     sfc    0    0    0   0   0    9   0   0   1369 HTAA93 KWBC 210000    0
+   7  44  64  80     sfc    0    0    0   0   0   12   1   0   4186 HTWA93 KWBC 210000    0
+  98 122   5  33    isob  200    0    0   0   0   16   0   1   1073 HUEA20 ECMF 211200    0
+   7  88  21 100     msl    0    0    0  12   0    6   1   0   1369 HHAC93 KWBC 211200    0
+   7  88  24 107     msl    0    0    0  72   0   12   1   0   1369 HLDK93 KWBC 211200    0
+   7  77  22  34    isob  500    0    0  12   0    8   0   0   1369 HVBC50 KWBC 211200    0
+   7  77  38  33    isob  400    0   10   0  18   10   0   1   3447 HUJD40 KWBC 220000    0

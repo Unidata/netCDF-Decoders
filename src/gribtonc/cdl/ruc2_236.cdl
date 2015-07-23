@@ -1,0 +1,600 @@
+netcdf Replace_with_model_name{ 
+
+
+dimensions:
+        record = UNLIMITED ;   // (reference time, forecast time)
+        x = 151 ;
+        y = 113 ;
+        level = 19 ;           // isobaric levels
+        lpdg = 7 ;              // layer between 2 levels at specified pressure differences from ground to levels
+        lfhg = 2 ;              // Layer Between Two Fixed Heights Above Ground
+        liso = 1 ;              // Layer Between Two Isobaric
+        fhg = 2 ;              // Fixed Height Above Ground
+        time_len = 21 ;        // string length for datetime strings
+        valtime_offset = 11 ;   // number of offset times
+        nmodels = 1 ;          // number of models
+        ngrids = 1 ;           // number of grids
+        nav = 1 ;              // for navigation
+        nav_len = 100 ;        // max string length for navigation strings
+
+variables:
+
+        double reftime(record) ;	// reference time of the model
+               reftime:long_name = "reference time" ;
+               reftime:units = "hours since 1992-1-1" ;
+
+        double valtime(record) ;	// forecast time ("valid" time)
+               valtime:long_name = "valid time" ;
+               valtime:units = "hours since 1992-1-1" ;
+
+        :record = "reftime, valtime" ;	// "dimension attribute" -- means
+                                        // (reftime, valtime) uniquely
+                                        // determine record
+
+        char   datetime(record, time_len) ; // derived from reftime
+               datetime:long_name = "reference date and time" ;
+               // units YYYY-MM-DD hh:mm:ssZ  (ISO 8601)
+
+        double valtime_offset(valtime_offset) ; // valtime - reftime
+               valtime_offset:long_name = "hours from reference time" ;
+               valtime_offset:units = "hours" ;
+
+        char   forecasttime(record, time_len) ; // derived from valtime
+               forecasttime:long_name = "forecast date and time" ;
+               // units YYYY-MM-DD hh:mm:ssZ  (ISO 8601)
+
+        float  level(level) ;
+               level:long_name = "isobaric level" ;
+               level:units = "hectopascals" ;
+
+        :lpdg = "lpdg_bot, lpdg_top" ; // ("lpdg_bot, lpdg_top") uniquely
+                                       // determines lpdg
+
+        float  lpdg_bot(lpdg) ;
+               lpdg_bot:long_name = "bottom level of layer between 2 levels at specified pressure differences from ground to levels " ;
+               lpdg_bot:units = "hPa" ;
+
+        float  lpdg_top(lpdg) ;
+               lpdg_top:long_name = "top level of layer between 2 levels at specified pressure differences from ground to levels " ;
+               lpdg_top:units = "hPa" ;
+
+        :lfhg = "lfhg_bot, lfhg_top" ; // ("lfhg_bot, lfhg_top") uniquely
+                                       // determines lfhg
+
+        float  lfhg_bot(lfhg) ;
+               lfhg_bot:long_name = "bottom level of Layer Between Two Fixed Heights Above Ground " ;
+               lfhg_bot:units = "hm" ;
+
+        float  lfhg_top(lfhg) ;
+               lfhg_top:long_name = "top level of Layer Between Two Fixed Heights Above Ground " ;
+               lfhg_top:units = "hm" ;
+
+        :liso = "liso_bot, liso_top" ; // ("liso_bot, liso_top") uniquely
+                                       // determines liso
+
+        float  liso_bot(liso) ;
+               liso_bot:long_name = "bottom level of Layer Between Two Isobaric " ;
+               liso_bot:units = "kPa" ;
+
+        float  liso_top(liso) ;
+               liso_top:long_name = "top level of Layer Between Two Isobaric " ;
+               liso_top:units = "kPa" ;
+
+        float  fhg(fhg) ;
+               fhg:long_name = "Fixed Height Above Ground" ;
+               fhg:units = "meters" ;
+
+
+        long   model_id(nmodels) ;
+               model_id:long_name = "generating process ID number" ;
+
+        // navigation variables all use nav dimension
+
+        char   nav_model(nav, nav_len) ;        // navigation parameterization
+               nav_model:long_name = "navigation model name" ;
+
+        int    grid_type_code(nav) ;
+               grid_type_code:long_name = "GRIB-1 GDS data representation type" ;
+
+        char   grid_type(nav, nav_len) ;
+               grid_type:long_name = "GRIB-1 grid type" ;
+
+        char   grid_name(nav, nav_len) ;
+               grid_name:long_name = "grid name" ;
+
+        int    grid_center(nav) ;
+               grid_center:long_name = "GRIB-1 originating center ID" ;
+
+        int    grid_number(nav, ngrids) ;
+               grid_number:long_name = "GRIB-1 catalogued grid numbers" ;
+               grid_number:_FillValue = -9999 ;
+
+        char   x_dim(nav, nav_len) ;
+               x_dim:long_name = "x dimension name" ;
+
+        char   y_dim(nav, nav_len) ;
+               y_dim:long_name = "y dimension name" ;
+
+        long   Nx(nav) ;
+               Nx:long_name = "number of points along x-axis" ;
+
+        long   Ny(nav) ;
+               Ny:long_name =  "number of points along y-axis" ;
+
+        float  La1(nav) ;
+               La1:long_name = "latitude of first grid point" ;
+               La1:units = "degrees_north" ;
+
+        float  Lo1(nav) ;
+               Lo1:long_name = "longitude of first grid point" ;
+               Lo1:units = "degrees_east" ;
+
+        float  Lov(nav) ;
+               Lov:long_name = "orientation of the grid" ;
+               Lov:units = "degrees_east" ;
+
+        float  Dx(nav) ;
+               Dx:long_name = "x-direction grid length" ;
+               Dx:units = "m" ;
+
+        float  Dy(nav) ;
+               Dy:long_name = "y-direction grid length" ;
+               Dy:units = "m" ;
+
+        byte   ProjFlag(nav) ;
+               ProjFlag:long_name = "projection center flag" ;
+
+        float  Latin1(nav) ;
+               Latin1:long_name = "first intersecting latitude" ;
+               Latin1:units = "degrees_north" ;
+
+        float  Latin2(nav) ;
+               Latin2:long_name = "second intersecting latitude" ;
+               Latin2:units = "degrees_north" ;
+
+        float  SpLat(nav) ;
+               SpLat:long_name = "latitude of the southern pole" ;
+               SpLat:units = "degrees_north" ;
+
+        float  SpLon(nav) ;
+               SpLon:long_name = "longitude of the southern pole" ;
+               SpLon:units = "degrees_east" ;
+
+        byte   ResCompFlag(nav) ;
+               ResCompFlag:long_name = "resolution and component flags" ;
+
+        // end of navigation variables
+
+        float  Z(record,level,y,x) ;
+               Z:long_name = "Geopotential height at Isobaric" ;
+               Z:GRIB_parameter_number = 7 ;
+               Z:GRIB_level_flag = 100 ;
+               Z:units = "gp m" ;
+               Z:_FillValue = -9999.f ;
+               Z:navigation = "nav" ;
+
+        float  Z_clbs(record,y,x) ;
+               Z_clbs:long_name = "Geopotential height at Cloud Base" ;
+               Z_clbs:GRIB_parameter_number = 7 ;
+               Z_clbs:GRIB_level_flag = 2 ;
+               Z_clbs:units = "gp m" ;
+               Z_clbs:_FillValue = -9999.f ;
+               Z_clbs:navigation = "nav" ;
+
+        float  Z_cltp(record,y,x) ;
+               Z_cltp:long_name = "Geopotential height at Cloud Top" ;
+               Z_cltp:GRIB_parameter_number = 7 ;
+               Z_cltp:GRIB_level_flag = 3 ;
+               Z_cltp:units = "gp m" ;
+               Z_cltp:_FillValue = -9999.f ;
+               Z_cltp:navigation = "nav" ;
+
+        float  Z_frzlvl(record,y,x) ;
+               Z_frzlvl:long_name = "Geopotential height at 0 Isotherm" ;
+               Z_frzlvl:GRIB_parameter_number = 7 ;
+               Z_frzlvl:GRIB_level_flag = 4 ;
+               Z_frzlvl:units = "gp m" ;
+               Z_frzlvl:_FillValue = -9999.f ;
+               Z_frzlvl:navigation = "nav" ;
+
+        float  Z_cctl(record,y,x) ;
+               Z_cctl:long_name = "Geopotential height at Convective cloud top level" ;
+               Z_cctl:GRIB_parameter_number = 7 ;
+               Z_cctl:GRIB_level_flag = 243 ;
+               Z_cctl:units = "gp m" ;
+               Z_cctl:_FillValue = -9999.f ;
+               Z_cctl:navigation = "nav" ;
+
+        float  omega(record,level,y,x) ;
+               omega:long_name = "Pressure vertical velocity at Isobaric" ;
+               omega:GRIB_parameter_number = 39 ;
+               omega:GRIB_level_flag = 100 ;
+               omega:units = "Pa/s" ;
+               omega:_FillValue = -9999.f ;
+               omega:navigation = "nav" ;
+
+        float  v(record,level,y,x) ;
+               v:long_name = "v-component of wind at Isobaric" ;
+               v:GRIB_parameter_number = 34 ;
+               v:GRIB_level_flag = 100 ;
+               v:units = "m/s" ;
+               v:_FillValue = -9999.f ;
+               v:navigation = "nav" ;
+
+        float  v_lpdg(record,lpdg,y,x) ;
+               v_lpdg:long_name = "v-component of wind at layer between 2 levels at specified pressure differences from ground to levels" ;
+               v_lpdg:GRIB_parameter_number = 34 ;
+               v_lpdg:GRIB_level_flag = 116 ;
+               v_lpdg:units = "m/s" ;
+               v_lpdg:_FillValue = -9999.f ;
+               v_lpdg:navigation = "nav" ;
+
+        float  v_maxwind(record,y,x) ;
+               v_maxwind:long_name = "v-component of wind at Maximum Wind" ;
+               v_maxwind:GRIB_parameter_number = 34 ;
+               v_maxwind:GRIB_level_flag = 6 ;
+               v_maxwind:units = "m/s" ;
+               v_maxwind:_FillValue = -9999.f ;
+               v_maxwind:navigation = "nav" ;
+
+        float  v_fhg(record,fhg,y,x) ;
+               v_fhg:long_name = "v-component of wind at Fixed Height Above Ground" ;
+               v_fhg:GRIB_parameter_number = 34 ;
+               v_fhg:GRIB_level_flag = 105 ;
+               v_fhg:units = "m/s" ;
+               v_fhg:_FillValue = -9999.f ;
+               v_fhg:navigation = "nav" ;
+
+        float  v_trop(record,y,x) ;
+               v_trop:long_name = "v-component of wind at Tropopause" ;
+               v_trop:GRIB_parameter_number = 34 ;
+               v_trop:GRIB_level_flag = 7 ;
+               v_trop:units = "m/s" ;
+               v_trop:_FillValue = -9999.f ;
+               v_trop:navigation = "nav" ;
+
+        float  T(record,level,y,x) ;
+               T:long_name = "Temperature at Isobaric" ;
+               T:GRIB_parameter_number = 11 ;
+               T:GRIB_level_flag = 100 ;
+               T:units = "degK" ;
+               T:_FillValue = -9999.f ;
+               T:navigation = "nav" ;
+
+        float  T_trop(record,y,x) ;
+               T_trop:long_name = "Temperature at Tropopause" ;
+               T_trop:GRIB_parameter_number = 11 ;
+               T_trop:GRIB_level_flag = 7 ;
+               T_trop:units = "degK" ;
+               T_trop:_FillValue = -9999.f ;
+               T_trop:navigation = "nav" ;
+
+        float  T_fhg(record,fhg,y,x) ;
+               T_fhg:long_name = "Temperature at Fixed Height Above Ground" ;
+               T_fhg:GRIB_parameter_number = 11 ;
+               T_fhg:GRIB_level_flag = 105 ;
+               T_fhg:units = "degK" ;
+               T_fhg:_FillValue = -9999.f ;
+               T_fhg:navigation = "nav" ;
+
+        float  T_lpdg(record,lpdg,y,x) ;
+               T_lpdg:long_name = "Temperature at layer between 2 levels at specified pressure differences from ground to levels" ;
+               T_lpdg:GRIB_parameter_number = 11 ;
+               T_lpdg:GRIB_level_flag = 116 ;
+               T_lpdg:units = "degK" ;
+               T_lpdg:_FillValue = -9999.f ;
+               T_lpdg:navigation = "nav" ;
+
+        float  u(record,level,y,x) ;
+               u:long_name = "u-component of wind at Isobaric" ;
+               u:GRIB_parameter_number = 33 ;
+               u:GRIB_level_flag = 100 ;
+               u:units = "m/s" ;
+               u:_FillValue = -9999.f ;
+               u:navigation = "nav" ;
+
+        float  u_lpdg(record,lpdg,y,x) ;
+               u_lpdg:long_name = "u-component of wind at layer between 2 levels at specified pressure differences from ground to levels" ;
+               u_lpdg:GRIB_parameter_number = 33 ;
+               u_lpdg:GRIB_level_flag = 116 ;
+               u_lpdg:units = "m/s" ;
+               u_lpdg:_FillValue = -9999.f ;
+               u_lpdg:navigation = "nav" ;
+
+        float  u_maxwind(record,y,x) ;
+               u_maxwind:long_name = "u-component of wind at Maximum Wind" ;
+               u_maxwind:GRIB_parameter_number = 33 ;
+               u_maxwind:GRIB_level_flag = 6 ;
+               u_maxwind:units = "m/s" ;
+               u_maxwind:_FillValue = -9999.f ;
+               u_maxwind:navigation = "nav" ;
+
+        float  u_fhg(record,fhg,y,x) ;
+               u_fhg:long_name = "u-component of wind at Fixed Height Above Ground" ;
+               u_fhg:GRIB_parameter_number = 33 ;
+               u_fhg:GRIB_level_flag = 105 ;
+               u_fhg:units = "m/s" ;
+               u_fhg:_FillValue = -9999.f ;
+               u_fhg:navigation = "nav" ;
+
+        float  u_trop(record,y,x) ;
+               u_trop:long_name = "u-component of wind at Tropopause" ;
+               u_trop:GRIB_parameter_number = 33 ;
+               u_trop:GRIB_level_flag = 7 ;
+               u_trop:units = "m/s" ;
+               u_trop:_FillValue = -9999.f ;
+               u_trop:navigation = "nav" ;
+
+        float  RH(record,level,y,x) ;
+               RH:long_name = "Relative humidity at Isobaric" ;
+               RH:GRIB_parameter_number = 52 ;
+               RH:GRIB_level_flag = 100 ;
+               RH:units = "percent" ;
+               RH:_FillValue = -9999.f ;
+               RH:navigation = "nav" ;
+
+        float  RH_frzlvl(record,y,x) ;
+               RH_frzlvl:long_name = "Relative humidity at 0 Isotherm" ;
+               RH_frzlvl:GRIB_parameter_number = 52 ;
+               RH_frzlvl:GRIB_level_flag = 4 ;
+               RH_frzlvl:units = "percent" ;
+               RH_frzlvl:_FillValue = -9999.f ;
+               RH_frzlvl:navigation = "nav" ;
+
+        float  RH_lpdg(record,lpdg,y,x) ;
+               RH_lpdg:long_name = "Relative humidity at layer between 2 levels at specified pressure differences from ground to levels" ;
+               RH_lpdg:GRIB_parameter_number = 52 ;
+               RH_lpdg:GRIB_level_flag = 116 ;
+               RH_lpdg:units = "percent" ;
+               RH_lpdg:_FillValue = -9999.f ;
+               RH_lpdg:navigation = "nav" ;
+
+        float  RH_fhg(record,fhg,y,x) ;
+               RH_fhg:long_name = "Relative humidity at Fixed Height Above Ground" ;
+               RH_fhg:GRIB_parameter_number = 52 ;
+               RH_fhg:GRIB_level_flag = 105 ;
+               RH_fhg:units = "percent" ;
+               RH_fhg:_FillValue = -9999.f ;
+               RH_fhg:navigation = "nav" ;
+
+        float  helc_lfhg(record,lfhg,y,x) ;
+               helc_lfhg:long_name = "Storm relative helicity at Layer Between Two Fixed Heights Above Ground" ;
+               helc_lfhg:GRIB_parameter_number = 190 ;
+               helc_lfhg:GRIB_level_flag = 106 ;
+               helc_lfhg:units = "m2/s2" ;
+               helc_lfhg:_FillValue = -9999.f ;
+               helc_lfhg:navigation = "nav" ;
+
+        float  Pm_msl(record,y,x) ;
+               Pm_msl:long_name = "Mean sea level pressure (MAPS system reduction) at Mean Sea" ;
+               Pm_msl:GRIB_parameter_number = 129 ;
+               Pm_msl:GRIB_level_flag = 102 ;
+               Pm_msl:units = "Pa" ;
+               Pm_msl:_FillValue = -9999.f ;
+               Pm_msl:navigation = "nav" ;
+
+        float  P_sfc(record,y,x) ;
+               P_sfc:long_name = "Pressure at Surface" ;
+               P_sfc:GRIB_parameter_number = 1 ;
+               P_sfc:GRIB_level_flag = 1 ;
+               P_sfc:units = "Pa" ;
+               P_sfc:_FillValue = -9999.f ;
+               P_sfc:navigation = "nav" ;
+
+        float  P_maxwind(record,y,x) ;
+               P_maxwind:long_name = "Pressure at Maximum Wind" ;
+               P_maxwind:GRIB_parameter_number = 1 ;
+               P_maxwind:GRIB_level_flag = 6 ;
+               P_maxwind:units = "Pa" ;
+               P_maxwind:_FillValue = -9999.f ;
+               P_maxwind:navigation = "nav" ;
+
+        float  P_trop(record,y,x) ;
+               P_trop:long_name = "Pressure at Tropopause" ;
+               P_trop:GRIB_parameter_number = 1 ;
+               P_trop:GRIB_level_flag = 7 ;
+               P_trop:units = "Pa" ;
+               P_trop:_FillValue = -9999.f ;
+               P_trop:navigation = "nav" ;
+
+        float  P_frzlvl(record,y,x) ;
+               P_frzlvl:long_name = "Pressure at 0 Isotherm" ;
+               P_frzlvl:GRIB_parameter_number = 1 ;
+               P_frzlvl:GRIB_level_flag = 4 ;
+               P_frzlvl:units = "Pa" ;
+               P_frzlvl:_FillValue = -9999.f ;
+               P_frzlvl:navigation = "nav" ;
+
+        float  cin_sfc(record,y,x) ;
+               cin_sfc:long_name = "Convective inhibition at Surface" ;
+               cin_sfc:GRIB_parameter_number = 156 ;
+               cin_sfc:GRIB_level_flag = 1 ;
+               cin_sfc:units = "J/kg" ;
+               cin_sfc:_FillValue = -9999.f ;
+               cin_sfc:navigation = "nav" ;
+
+        float  LI4_lpdg(record,lpdg,y,x) ;
+               LI4_lpdg:long_name = "Best (4 layer) lifted index at layer between 2 levels at specified pressure differences from ground to levels" ;
+               LI4_lpdg:GRIB_parameter_number = 132 ;
+               LI4_lpdg:GRIB_level_flag = 116 ;
+               LI4_lpdg:units = "degK" ;
+               LI4_lpdg:_FillValue = -9999.f ;
+               LI4_lpdg:navigation = "nav" ;
+
+        float  ustm_lfhg(record,lfhg,y,x) ;
+               ustm_lfhg:long_name = "u-component of storm motion at Layer Between Two Fixed Heights Above Ground" ;
+               ustm_lfhg:GRIB_parameter_number = 196 ;
+               ustm_lfhg:GRIB_level_flag = 106 ;
+               ustm_lfhg:units = "m/s" ;
+               ustm_lfhg:_FillValue = -9999.f ;
+               ustm_lfhg:navigation = "nav" ;
+
+        float  gust_sfc(record,y,x) ;
+               gust_sfc:long_name = "Surface wind gust at Surface" ;
+               gust_sfc:GRIB_parameter_number = 180 ;
+               gust_sfc:GRIB_level_flag = 1 ;
+               gust_sfc:units = "m/s" ;
+               gust_sfc:_FillValue = -9999.f ;
+               gust_sfc:navigation = "nav" ;
+
+        float  LI(record,liso,y,x) ;
+               LI:long_name = "Surface lifted index at Layer Between Two Isobaric" ;
+               LI:GRIB_parameter_number = 131 ;
+               LI:GRIB_level_flag = 101 ;
+               LI:units = "degK" ;
+               LI:_FillValue = -9999.f ;
+               LI:navigation = "nav" ;
+
+        float  snow(record,y,x) ;
+               snow:long_name = "Snow depth at Surface" ;
+               snow:GRIB_parameter_number = 66 ;
+               snow:GRIB_level_flag = 1 ;
+               snow:units = "m" ;
+               snow:_FillValue = -9999.f ;
+               snow:navigation = "nav" ;
+
+        float  vis_sfc(record,y,x) ;
+               vis_sfc:long_name = "Visibility at Surface" ;
+               vis_sfc:GRIB_parameter_number = 20 ;
+               vis_sfc:GRIB_level_flag = 1 ;
+               vis_sfc:units = "m" ;
+               vis_sfc:_FillValue = -9999.f ;
+               vis_sfc:navigation = "nav" ;
+
+        float  pr_water_atm(record,y,x) ;
+               pr_water_atm:long_name = "Precipitable water at Entire atmosphere considered as a single layer" ;
+               pr_water_atm:GRIB_parameter_number = 54 ;
+               pr_water_atm:GRIB_level_flag = 200 ;
+               pr_water_atm:units = "kg/m2" ;
+               pr_water_atm:_FillValue = -9999.f ;
+               pr_water_atm:navigation = "nav" ;
+
+        float  cfrzrn(record,y,x) ;
+               cfrzrn:long_name = "Categorical freezing rain  (yes=1; no=0) at Surface" ;
+               cfrzrn:GRIB_parameter_number = 141 ;
+               cfrzrn:GRIB_level_flag = 1 ;
+               cfrzrn:units = "bit" ;
+               cfrzrn:_FillValue = -9999.f ;
+               cfrzrn:navigation = "nav" ;
+
+        float  csnow(record,y,x) ;
+               csnow:long_name = "Categorical snow  (yes=1; no=0) at Surface" ;
+               csnow:GRIB_parameter_number = 143 ;
+               csnow:GRIB_level_flag = 1 ;
+               csnow:units = "bit" ;
+               csnow:_FillValue = -9999.f ;
+               csnow:navigation = "nav" ;
+
+        float  crain(record,y,x) ;
+               crain:long_name = "Categorical rain  (yes=1; no=0) at Surface" ;
+               crain:GRIB_parameter_number = 140 ;
+               crain:GRIB_level_flag = 1 ;
+               crain:units = "bit" ;
+               crain:_FillValue = -9999.f ;
+               crain:navigation = "nav" ;
+
+        float  cicepl(record,y,x) ;
+               cicepl:long_name = "Categorical ice pellets  (yes=1; no=0) at Surface" ;
+               cicepl:GRIB_parameter_number = 142 ;
+               cicepl:GRIB_level_flag = 1 ;
+               cicepl:units = "bit" ;
+               cicepl:_FillValue = -9999.f ;
+               cicepl:navigation = "nav" ;
+
+        float  cape_sfc(record,y,x) ;
+               cape_sfc:long_name = "Convective available potential energy at Surface" ;
+               cape_sfc:GRIB_parameter_number = 157 ;
+               cape_sfc:GRIB_level_flag = 1 ;
+               cape_sfc:units = "J/kg" ;
+               cape_sfc:_FillValue = -9999.f ;
+               cape_sfc:navigation = "nav" ;
+
+        float  precip_rt(record,y,x) ;
+               precip_rt:long_name = "Precipitation rate at Surface" ;
+               precip_rt:GRIB_parameter_number = 59 ;
+               precip_rt:GRIB_level_flag = 1 ;
+               precip_rt:units = "kg/(m2 s)" ;
+               precip_rt:_FillValue = -9999.f ;
+               precip_rt:navigation = "nav" ;
+
+        float  vstm_lfhg(record,lfhg,y,x) ;
+               vstm_lfhg:long_name = "v-component of storm motion at Layer Between Two Fixed Heights Above Ground" ;
+               vstm_lfhg:GRIB_parameter_number = 197 ;
+               vstm_lfhg:GRIB_level_flag = 106 ;
+               vstm_lfhg:units = "m/s" ;
+               vstm_lfhg:_FillValue = -9999.f ;
+               vstm_lfhg:navigation = "nav" ;
+
+        float  precip_cn(record,y,x) ;
+               precip_cn:long_name = "Convective precipitation at Surface" ;
+               precip_cn:GRIB_parameter_number = 63 ;
+               precip_cn:GRIB_level_flag = 1 ;
+               precip_cn:units = "kg/m2" ;
+               precip_cn:_FillValue = -9999.f ;
+               precip_cn:navigation = "nav" ;
+
+        float  precip_ls(record,y,x) ;
+               precip_ls:long_name = "Large scale precipitation at Surface" ;
+               precip_ls:GRIB_parameter_number = 62 ;
+               precip_ls:GRIB_level_flag = 1 ;
+               precip_ls:units = "kg/m2" ;
+               precip_ls:_FillValue = -9999.f ;
+               precip_ls:navigation = "nav" ;
+
+        float  snow_wat(record,y,x) ;
+               snow_wat:long_name = "Water equivalent of accumulated snow depth at Surface" ;
+               snow_wat:GRIB_parameter_number = 65 ;
+               snow_wat:GRIB_level_flag = 1 ;
+               snow_wat:units = "kg/m2" ;
+               snow_wat:_FillValue = -9999.f ;
+               snow_wat:navigation = "nav" ;
+
+
+// global attributes
+               :history = "2012-05-09 10:15:07 - created by gribtocdl" ; 
+               :title = "Enter model definition here" ;
+               :Conventions = "NUWG" ;
+               :GRIB_reference = "Office Note 388 GRIB" ;
+               :GRIB_URL = "http://www.nco.ncep.noaa.gov/pmb/docs/on388/" ;
+               :version = 0.0 ;
+
+data:
+
+ level = 1000.0, 950.0, 900.0, 850.0, 800.0, 750.0, 700.0, 650.0, 600.0, 550.0, 
+      500.0, 450.0, 400.0, 350.0, 300.0, 250.0, 200.0, 150.0, 100.0 ;
+ lpdg_bot = 60.0, 30.0, 150.0, 0.0, 120.0, 0.0, 90.0 ;
+ lpdg_top = 90.0, 60.0, 180.0, 30.0, 150.0, 180.0, 120.0 ;
+ lfhg_bot = 0.0, 0.0 ;
+ lfhg_top = 30.0, 60.0 ;
+ liso_bot = 100.0 ;
+ liso_top = 50.0 ;
+ fhg = 2.0, 10.0 ;
+ model_id = 105 ;
+ valtime_offset = 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 12 ;
+
+
+ // Navigation
+ nav_model = "GRIB1" ;
+ grid_type_code = 3 ;
+ grid_type = "Lambert conformal projection" ;
+ grid_name = " " ;
+ grid_center = 7 ;
+ grid_number = 236 ;
+ x_dim = "x" ;
+ y_dim = "y" ;
+ Nx = 151 ;
+ Ny = 113 ;
+ La1 = 16.281000 ;
+ Lo1 = 233.862000 ;
+ Lov = -95.000000 ;
+ Dx = 40635.000000 ;
+ Dy = 40635.000000 ;
+ Latin1 = 25.000000 ;
+ Latin2 = 25.000000 ;
+ SpLat = 0.000000 ;
+ SpLon = 0.000000 ;
+ // Pole in proj. plane = North ;
+ ProjFlag = 0 ;
+ ResCompFlag = 8 ;
+
+}

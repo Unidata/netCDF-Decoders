@@ -1,0 +1,39 @@
+dnl $Id: configure.in,v 1.16 2004/03/12 21:22:18 rkambic Exp $
+dnl
+dnl Process this file with GNU autoconf(1) to produce a configure script.
+dnl
+AC_INIT(gribtonc)
+UC_INIT_NOPORT
+
+UC_PREFIX(..)
+
+UC_PROG_CC
+UC_PROG_CPP
+UC_DEFAULT(CFLAGS, -g)
+
+AC_PROG_RANLIB
+UC_PROG_CC_MAKEDEPEND
+UC_PROG_TBL
+UC_PROG_NEQN
+UC_PROG_TAR
+
+UC_FTPDIR(pub/decoders)
+UC_VERSION
+UC_NETCDF
+UC_UDUNITS
+UC_LIB_RPC
+UC_LIB_SOCKET
+UL_ULOG
+
+UC_FINISH( \
+    Makefile \
+    gribtonc/Makefile \
+    gribtonc/cdl/Makefile \
+    ascii/Makefile \
+    metar/Makefile \
+    syn/Makefile \
+    buoy/Makefile \
+    upperair/Makefile \
+    ldmConnect/Makefile \
+    zone/Makefile \
+)

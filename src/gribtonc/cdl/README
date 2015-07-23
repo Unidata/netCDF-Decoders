@@ -1,0 +1,101 @@
+This directory contains CDL files for netCDF files of decoded HDS grid
+data.  CDL files are ASCII representations for netCDF files.  The `ncgen'
+utility can be used to convert a CDL file into a netCDF file, and the
+`ncdump' utility can be used to convert a netCDF file into a CDL file.  The
+*.cdl files in this directory are used by the `gribtonc' decoder in creating
+netCDF files from the HDS GRIB data.
+
+If you will be having the ldm server invoke `gribtonc' to decode GRIB data
+into netCDF files, it would be convenient to install these files in the
+`etc/' subdirectory of the ldm server's default directory, for example
+`/usr/local/ldm/etc'.  That way you may provide `gribtonc' with short
+relative pathnames rather than long absolute pathnames for the CDL files.
+Here is an example of a pqact.conf entry for the RUC model data, assuming
+you install ruc.cdl in the ldm/etc directory:
+
+# RUC model on Lambert conformal CONUS grid
+HDS	^[YZ].Q... KWBC (..)(..).*/mRUC
+	PIPE	/usr/local/ldm/decoders/gribtonc
+	etc/ruc_211.cdl
+	data/GRIB/(\1:yy)(\1:mm)\1\2_ruc_211.nc
+
+A complete set of example pqact.conf entries using these CDL files is in 
+the gribtonc.entries file in this directory.
+
+NUWG Conventions
+================
+
+These CDL files use the NUWG conventions for representing georeferencing
+information for gridded files.  For more information about NUWG conventions,
+use a WWW browser on the URL
+
+    http://www.unidata.ucar.edu/packages/netcdf/NUWG/
+
+Useful Changes to CDL Files
+===========================
+
+The netCDF files produced by `gribtonc' can be changed by editing these CDL
+files.  The kinds of changes you might want to make to the HDS CDL files
+include changes to the `units' attribute, deletion of some variables or
+levels to save space, and combining parameters from separate CDL files into
+the same CDL file.
+
+Currently GRIB edition 1 units are used but for historical continuity with
+archives, you may want to convert to GRIB edition 0 units, as in previous
+releases.  You can change the units to any conformable units, and the
+`gribtonc' decoder will convert from GRIB edition 1 units to the specified
+units as part of the decoding.  The syntax for units are as specified for
+the `udunits' library, installation of which is a prerequisite for
+`gribtonc'.
+
+You may omit some of the level values in the data section of a CDL file that
+includes a level dimension, reducing the size of the resulting file
+proportionally, since GRIB products for the omitted levels won't be stored.
+
+Time Dimension
+--------------
+
+The NUWG has agreed that there should only be one record dimension,
+`record', with the model reference time, `reftime(record)' and the forecast
+time, `valtime(record)', both doubles in units of `hours since 1992-1-1'.
+This has the advantage over the old `frtime' unlimited dimension that
+multiple model runs may be stored in the same file.  The provided CDL files
+also contain variables `datetime' and `valtime_offset', which gribtonc will
+fill in with the derived reference date and time and period from reference
+time, respectively.
+
+Dimension Attributes
+--------------------
+
+There is already a convention for a variable that has the same name as a
+dimension.  Such a variable is called a coordinate variable, and is expected
+to be a one-dimensional vector that has coordinate values for the associated
+dimension.  The NUWG has agreed on another convention for attributes that
+have the same name as dimensions.  Such an attribute is called a "dimension
+attribute".  It is a string-valued attribute that names one or more
+variables that together constitute a "key" for that dimension.  Each such
+variable must be a vector that uses only the dimension for its shape.  For a
+list of variables to be a key for a dimension means that given values for
+the named variables, at most one dimension value is functionally determined
+by these values.  Examples of dimension attributes in the CDL files for HDS
+data include the global `record' attribute and attributes for level and
+layer dimensions such as `ls', `ls_sfc', `lfhg', `lpdg', etc.
+
+Other Changes
+-------------
+
+The NUWG has also recommended use of a navigation dimension to describe both
+the lat/lon grids as well as polar-stereographic, Lambert conformal,
+quasi-regular and other grids that may appear on the HDS circuit.
+Navigation (or georeferencing) information, is what's needed to transform
+from the indices of a variable (indicial space) to a location (lat/lon
+space).
+
+Hence instead of simply using a list of latitudes and a list of longitudes
+for a latitude/longitude grid, a separate `navigation dimension' is employed
+for each navigation mapping needed in a netCDF file.  Variables that use the
+navigation dimension provide the parameters of the mapping.  Where standard
+names for variables describing a navigation mapping are needed, NUWG chose
+to adopt the names used in the Stackpole document describing GRIB edition 1.
+Use of navigation dimensions are provided in all of the CDL files.
+

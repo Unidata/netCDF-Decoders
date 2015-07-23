@@ -1,0 +1,389 @@
+$Id: RELEASE-NOTES,v 1.37 2004/12/21 20:55:26 rkambic Exp $
+
+Release	Date		Notes
+_________________	______________________________________________________
+5.0.2 2013-05-07	Corrected gfs_37-44.cdl (grids are 1.25x1.25 degree);
+                        added ukmet_21-24.cdl (like GFS AVN, these are 1.25x1.25 degree
+                        grids); added '-n' flag to gribtonc (says to not expand
+                        the record dimension past what is defined in the CDL/existing
+                        netCDF file); updated 'port' subdirectory with latest code
+                        (so that the package will build on CentOS 6.4 x86_64)
+5.0.1 2012-06-13	Remade ruc2_236.cdl because of transfer of the RUC2 production
+			from FSL to RAP 
+5.0.0 2007-10-10	The perl Decoders have been moved to their own package
+			so the process of deprecating this package can take place.
+			This package is being deprecated because of it's 
+			limitation of not being able to decode Grib2, compile
+			problems, and static parameter table.
+4.1.7 2007-09-27	metar2nc decoders removes reports with illegal cntl chars
+			changed dist from Z to gz format
+4.1.6 2007-08-20	fixed typo in eta_211.cdl
+4.1.5 2007-02-09	added a -c option to metar2nc* so it can process archive
+                        data from the command line.
+4.1.4 2006-10-04	fixed bug in ua2nc, putting 23hr data into wrong file.
+4.1.3 2006-09-14	fixed bug in ua2nc, putting 23hr data into wrong file.
+4.1.2 2006-09-06	added more levels
+4.1.1 2006-08-23	minor bug fixes, recs.c added import, metar2nc.new1
+			SPD and GUST are now floats when converted from knots
+			to m/s. etc
+4.0.0 2005-12-19	update the METAR table sfmetar_sa.tbl, created new
+			metar.cdl.new1, new table lsfstns.tbl for synoptic 
+			decoder, and new table for upperair decoder snstns.tbl
+			updated other cdls. the new table names cause mods to
+			syn2nc and ua2nc.
+4.0.0 2005-10-05	changed perl from /usr/local/bin/perl to /usr/bin/perl
+			pqact entries don't need yyyymm argument anymore.
+			new naming convention, ie surface_METAR_yyyymmdd_hhmm.nc
+			added -h option to write hourly files for the all perl
+			decoders, default is daily file. updated sfmetar.tbl, 
+			snworld.tbl and systns_upc.tbl. fixed bug in syn2nc 
+			that returned wind DIR greater than 900, removed java 
+			Grib decoder jars, it's has it own release package now
+			called grib-decoder-java_2.2.10.tar.gz. gfs_211.cdl,
+			eta_211.cdl, and ruc2_236.cdl were updated to add
+			new parmeters. managed log files to only keeps 3 logs
+			added global attributes to metar.cdl.new1
+			changed testdata.wmo to testdata.wmo.bak, etc
+
+3.1.1 2005-05-24	changed units of Dx and Dy to be meters instead of km 
+			in all cdls. changed cdl version to be 1.0
+3.1.0 2005-05-24	fixed the perl decoders so unicode characters don't put
+			decoder into infinite loop. This fix is needed for 
+			perl version 5.8.0 and higher. fixed buoy2nc and syn2nc
+			where min was set to 60 and timegm() was called. 
+			Also added the java grib.jar to the release.
+
+3.0.9 2005-03-01	fixed the perl decoder cdls to be udunits compliant.  
+3.0.8 2005-02-04	fixed metar2nc and metar2nc.new1 dew point temperature
+			incase the coding changes from /M00 to /M0
+3.0.7 2004-12-21	added level 245, changed files: levels.h gribtocdl.c 
+			levels.c nc.c
+3.0.6 2004-10-21	some parameters started with a number, thats illegal
+			in netcdf. also correct units for oztot (ozone total)
+3.0.5 2004-10-18	update cdls and new version of metar.new1, metar.cdl.new
+
+3.0.4 2004-07-22	rewrote perl decoders to be more robust especially
+			when checking the report time for accuracy. Changed
+			test to read in more stations from the sfmetar_sa.tbl
+			station file. Added metar2nc.new1 and metar.cdl.new1 as
+			a new perl decoder, new netCDF format. New script
+			makeCDL1.pl makes a cdl file metar.cdl.new1. In recs.c
+			upped RECS_INIT_SIZE to 64. Updated cdls
+			In nc.c added stronger test to parmname, levels
+			mods to test.pl for real time data, mods to
+			src/*/testdata.wmo for real time testing. Fixed 
+			return value for time range indicator in gribtocdl
+
+3.0.3 2004-03-12	added Writer scripts into all the perl decoders. These
+			scripts bust-up bulletins into individual reports
+			added missing level info to gribtocdl.c program
+			added Makefile.in to zone MANIFEST
+			Fixed century bug, files recs.c units.c gribdump
+
+3.0.2 2004-02-01	change #define MAX_GRIB_SIZE 200000
+			added forecasttime variable to gribtocdl
+			rename all cdls to reflect new model names
+			updated INSTALL and CUSTOMIZE files
+			in cdl dir, updated Makefile.in and README
+			mods to metar2nc, made matches more robust
+
+3.0.1 2003-04-25	added CF standard_name, forecasttime, and enhanced
+			Conventions attribute to acknowledge CF conventions
+			to all model cdls. Modified recs.c to write out
+			forecasttime.
+
+3.0.0 2003-03-25	added dimension valtime_offset for the valtime_offset
+			variable. Enhanced cdl to have the data for the 
+			valtime_offset var.  This permits the data to be stored
+			in monotonic increasing order.  Added parameter_number
+			and level_number attributes to variables.
+
+2.4.4 2003-02-25        added vars gust_sfc to ruc2.cdl and vars Tmin_fhg and
+			Tmax_fhg to avn-x.cdl
+			mods to gdes.c gribtocdl.[1c] inetutil.c ulog.h so 
+			code compiles on AIX boxes.
+
+2.4.3 2003-02-21        modifications so user parms functionality works
+			correctly in the code, new functionality to 
+			gribdump, also updated the man pages. files:
+			gribtocdl.c, params.c, gribdump.c, gribtonc.1 and
+			gribdump.1
+			
+2.4.2 2003-02-19        Added the PNO indicator for Metar decoder
+			In gdes.c, changed i_dim from lat to lon
+			fixed avn-1.0x1.0.cdl also
+
+2.4.1 2003-01-31        Fixed some error for the avn-1.0x1.0 Grid.  Also fixed
+			errors for the Gausian lat/lon grid, plus other fixes
+			mods to gribtocld.c gdes.c nc.c 
+
+2.4.0 2002-11-04        Merge in code made by Arild Burud and Terje Reite for
+                        program gribtocdl.  Also changed levels.{ch} some names
+                        changes and other added. Added new NWS parameter in
+			params.[ch], mods to nc.c for avn 1 degree grid
+
+2.3.8 2001-03-23        In ruc.cdl added omega variable, Vertical velocity
+
+
+2.3.7 2000-02-15	Added suffixes in levels.(c|h) for the ruc2 vars.
+			Updated the ruc2.cdl for the new vars.
+			More Y2K fixes for the metar2nc decoders.
+			fixed test.pl for 2000, and update testdata.wmo
+			for decoders.
+
+2.3.6 1999-12-7		y2k fixes in all the perl decoders.
+			Upperair decoder now uses the awips cdl, called 
+			raob.cdl, changed upperair/Makefile.in to include 
+			raob.cdl, modified test.pl for upperair grib1.h was
+			modified to accommodate large products. ruc2.cdl was
+			modified to new vars: ssrun, etc.
+
+2.3.5                   avn-q.cdl eta.cdl eta212.cdl ngm-q.cdl ruc.cdl files
+			were modified because the earth_shape var was wrong.
+			get_prod.c modified to handle a 7 at the end of the
+                        data section, not end of product 777
+			added realclean rule to Makefile.in
+			ldmConnect changed hash initializations from {} to ()
+			gdes.c added return ret after initial ret = 0 for 
+			error.
+2.3.4 1997-06-05
+                        VERSION changed 2.3.4
+                        configure.in, test.pl, README.perlDecoders
+                        changed for ascii2nc 
+                        Created file Makefile.in, testdata, ascii2nc, and
+                        ascii2nc.1 for perl decoder ascii2nc
+                        In metar2nc, syn2nc, bouy2nc and ua2nc changed
+                        RDWR typeglob to WRITE because not exported any 
+                        longer in netcdf-perl
+			In Makefile.in prefixed test.pl with perl, added
+                        code for ascii2nc
+			In ncfloats.c changed ncvoid to void because of
+			NetCDF release 3.3
+                        All station tables for perl decoders updated.
+2.3.3  1997-04-15       Fixed memory leak in ua2nc ( Upper Air Decoder ).
+                        Changed surface to fixed height above ground 
+                        for temperature and added model id 80 for SPEC62MRF data
+                        in the mrf-a.cdl.  gribtonc now runs on 64 bit
+                        platforms and ncinquire bug that causes core dumps was  
+                        fixed. Updated hrs.conf entries to comply to NWS changes.
+			Added new Spectral model cdl avn-1.25x1.25.cdl.
+                        Added ldmConnect script to release, also includes
+                        new -a flag for storing file in station ID/bulletin ID
+                        directory structure.
+2.3.2  1996-11-14	Release tar file was corrupted.
+2.3.1  1996-11-08	Fixes by Harry Edmon, for the edition 0 grids.
+
+2.3.0  1996-10-22	First release of the combined gribtonc and perl decoders
+			For gribtonc, same as release 2.2.2 .  For perl decoders,
+			a new Synoptic decoder and improved Buoy decoder that
+			decodes the BBXX reports as well as the ZZYY reports.
+			Other minor fixes.
+
+2.2.2  1996-06-18	Fixed small memory leak in gribtonc that occurred
+			when short or oversize product is abandoned. 
+
+			Changed gribdump/gribtonc scan so that anything can
+			occur after terminating '7777', not just <CR><CR>
+			or 'GRIB', by checking count after 'GRIB'.  This
+			will make gribtonc work for GRIB products that are
+			separated by arbitrary stuff, not just WMO
+			envelopes.
+
+			Updated to incorporate January 2, 1996 changes to
+			NCEP Office Note 388 (GRIB Edition 1).
+
+2.2.1  1996-01-10	Fixed cause of segmentation violation or
+			"out of memory" message that might occur if gribtonc
+			has timed out from not receiving input for ten
+			minutes, and a new gribtonc needs to open the same
+			output file to append more data.
+
+			Fixed declaration in ulog.c that prevented it from
+			compiling with non-standard /usr/ucb/cc compiler.
+
+			Including sample pqact.conf entries for HDS data in
+			gribtonc/cdl/hds.conf.  Updated cdl README file.
+
+2.2    1996-01-05	Isolated code to handle (reftimes,valtimes)-> record
+			mapping.  Fixed getrec() function to not re-write
+			reftimes and valtimes variables when opening an
+			existing netCDF file.  Corrected handling of units
+			for valtime and reftime (valtime was in seconds
+			rather than hours).
+
+			Write datetime and valtime_offset variables, if
+			present, to aid human comprehension.
+
+			Write extra time-range indicator information with
+			auxilliary variables, such as PRECIP_accum_times for
+			precipitation accumulation intervals.
+
+			Added ncsync() after writing each product, to keep
+			netCDF file updated.
+
+			Changed longitude in navigation for G grid to -52.5
+			(was 52.5).
+
+			Updated old Copyright notices.
+
+			Added erealloc and used for growing tables.
+
+			Added datetime and valtime_offset variables to CDL
+			files to aid human comprehension of reference times
+			and forecast times.
+
+			Added "accum" dimension and extra auxilliary
+			precipitation variables to CDL files for
+			precipitation accumulation intervals, where needed.
+
+			Removed some gratuitous differences in
+			capitalization in values of long_name attributes in
+			CDL files.
+			
+			Updated ECMF model ID to 132 in ecmf.cdl.
+
+			Changed "NMC" references to "NCEP" and "HRS"
+			occurrences to "HDS" in CDL files.
+
+
+2.1    1995-12-12	Adapted to new ETA model parameters and levels.
+			
+			Base level tables on level dimensions rather than
+			type of level (and similarly for layers).  This
+			permits multiple level tables for the same kind of
+			level, which allows multiple level dimensions of the
+			same kind.  The new ETA model uses five different
+			sigma layer dimensions, so this was necessary.  The
+			ability to have multiple level dimensions was
+			exploited in changes to the CDL templates for the
+			ETA, NGM, and AVN models, to make the resulting
+			netCDF files smaller by eliminating levels and
+			layers that don't exist for some variables.
+
+			Removed the ill-conceived "accum" dimension used for
+			precipitation accumulation, and the whole idea of
+			using a dimension for time range indicators.  This
+			also reduces the size of netCDF files that used it.
+
+			Permit non-record variables, such as Z_sfc(y,x) for
+			terrain.
+
+			Added new parameters: helicity, u and components of
+			storm motion.
+
+			Fixed gribdump and gribtonc to read raw GRIB
+			products as well as GRIB products in a WMO envelope.
+
+			Added portential vorticity level.
+
+			Changed sigma levels units to be dimensionsless.
+
+			Added netCDF file name to messages printed when no
+			parameter match found.
+
+			Added parameter 10 for total ozone.
+
+			Added new time units for 3, 6, 12 hours and new time
+			range indicators for variance and standard
+			deviation.
+
+			Added new level dimensions to CDL template files for
+			the subset of isobaric levels on which absolute
+			vorticity and relative humidity are computed.
+
+			Eliminated use of grep(1)'s -q option in configure
+			script because it's not supported on all platforms.
+
+2.0.11 1995-11-27	Reverted lifted index parameters from degC to degK, 
+			because they are really degK, this is not an
+			artifact of units conversion.
+
+			Removed the LI:level_1 and LI:level_2 attributes
+			from ngm-g.cdl and ngm-q.cdl, because the lifted
+			index levels are specified as values for the
+			liso_bot and liso_top variables.
+
+2.0.10 1995-11-22	Allow psuedo-units like "(allocated by centers)"
+			that begin with a "(", so that adding new data to
+			existing netCDF files created with the old .cdl
+			files will work without generating lots of error
+			messages about error parsing units. 
+			
+2.0.9 1995-11-22	Fixed handling of levels and layers units.  For
+			example, liso layers use kPa in GRIB product, but
+			should be changed to hPa in netCDF file.
+
+			Fixed lifted index units to be C instead of K, since
+			the lifted index is a difference of temperatures.
+			Fixed sigma level units to be dimensionless.
+
+			Removed silly "(allocated by centers)" unit
+			attribute for model_id variable, so now all CDL file
+			units are parsable by udunits.
+
+			Changed FILENAME_MAX to _POSIX_PATH_MAX to
+			workaround incorrect HP definition of former
+			constant.
+
+			Changed liso dimension from 2 to 1 in CDL files,
+			because there is only one lifted index for these
+			parameters.  Also changed liso_top and liso_bot to
+			500 and 1000 to use hPa.
+			
+2.0.8 1995-11-17	Generalized handling of levels and layers to handle
+			all GRIB levels and layers, not just those currently
+			in HDS datastream.  Added conventional names for new
+			level and layer dimensions.
+
+			Added Z_sfc parameter to ruc.cdl and ngm-q.cdl,
+			since it's now appeaaring in the HDS datastream.
+
+2.0.7 1995-11-03	Add model 81 (SSIAVN) to allowable model_id values
+			for avn_q.cdl.  Add P_sfc variable to RUC model
+			variables.
+
+			Rename "gribtonc/test/" directory to
+			"gribtonc/tests" so "make test" has a chance of
+			working.
+
+			Fixed portability problems so would compile on AIX
+			and Ultrix, making sure "c89" compiler is preferred
+			to "cc" on AIX.
+
+			Got "make test" to work on OSF1-3.0, AIX-4.1,
+			HPUX-9.05, IRIX-5.3, SunOS-5.4, SunOS-4.1.4, and
+			Ultrix 4.4.
+			
+2.0.6 1995-10-31	In cdl/avn-q.cdl, deleted "liso" dimension and
+			changed LI not to use liso dimension, since the
+			model output now says lifted index is defined for
+			LEVEL_SURFACE, not for LEVEL_LISO as it used to be.
+			Changed accumulation intervals used for PRECIP
+			variable to match what is now appearing in the data
+			stream.
+			
+			Fixed format descriptors in some error messages in
+			gribdump and gribtonc to match type of value
+			printed.  This fixes a segmentation violation
+			occurring in gribtonc when preciptaion intervals
+			don't match CDL file for AVN model.
+
+2.0.5	1995-10-25	Fixed repeated 180,-180 longitude in avn-x.cdl.
+
+2.0.4	1995-10-11	Corrected eta.cdl to provide model_id dimension.
+
+2.0.3	1995-10-11	Added new ETA 48km model number.
+
+			Ported makefiles to POSIX standard.
+
+2.0.2	1995-6-19
+
+			removed alloca() from port for HP-UX fix
+
+			fixed cubic spline interpolation in gribtonc
+
+			modified gribdump to print data by row
+
+2.0.1	1995-6-15
+
+			Initial beta release

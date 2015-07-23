@@ -1,0 +1,49 @@
+# This file is for customizing the configuation process performed by
+# `./configuration'.  This file consists of sh(1) variable-definition lines.
+# The value given to those variable by this file will override their default
+# values.
+#
+# You can also customize the configuration process via the environment
+# variables seen by ./configure.  For example:
+#
+#     In csh(1):
+#	  % setenv CC acc
+#	  & setenv CFLAGS -g
+#	  % ./configure
+#
+#     In sh(1):
+#	  $ CC=acc CFLAGS=-g ./configure
+#
+# Variables in this file override the environmental ones. All the paths in
+# this file are examples, set the paths to your installation paths
+#
+#############################################################################
+#
+# Here are sample setting for environment variables: CPP_NETCDF, LD_NETCDF,
+# CPP_UDUNITS, LD_UDUNITS, and UDUNITS_PATH.  The packages udunits and netCDF
+# must be installed to set these variables. The INSTALL file has more detail.
+# The current setting will not work except for the CC variable, that I would
+# leave set as is.
+#
+#
+# netCDF header file and library references:
+#CPP_NETCDF=/home/rkambic/netcdf/include
+#LD_NETCDF='-L/home/rkambic/netcdf/lib -lnetcdf'
+#
+# udunits header file and library references:
+#CPP_UDUNITS=-I/home/rkambic/udunits/include
+#LD_UDUNITS='-L/home/rkambic/udunits/lib -ludunits'
+#
+# On Linux and BSD systems:
+#
+# Type of C compiler:
+CC=gcc
+#
+# Installation prefix:
+# prefix=/usr/local/unidata
+#
+# udunits.dat file location, set UDUNITS_PATH so runtime gribtonc can find file
+#UDUNITS_PATH=/home/rkambic/udunits/etc/udunits.dat
+#
+# Here's a url with search ability for additional compiling information:
+# http://www.unidata.ucar.edu/search.jsp?decoders

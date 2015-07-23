@@ -1,0 +1,88 @@
+# $Id: Makefile.in,v 1.11 2004/01/28 20:14:22 rkambic Exp $
+#
+#	Makefile for GRIB to netCDF decoder CDL template files
+#
+
+.POSIX:
+
+prefix = ../../..
+
+ETCFILES = $(CDL_SOURCES)
+
+MANIFEST	= \
+		  Makefile.in \
+		  $(CDL_SOURCES) \
+		  README
+
+CDL_SOURCES = \
+	gfs_21-24.cdl \
+	sst_61-64.cdl \
+	sst_21-24.cdl \
+	gfs_25-26.cdl \
+	ecmwf_1-12.cdl \
+	ocean_21-24.cdl \
+	ruc_211.cdl \
+	ruc2_236.cdl \
+	ngm_211.cdl \
+	eta_211.cdl \
+	gfs_211.cdl \
+	gfs_37-44.cdl \
+	ukmet_37-44.cdl \
+	gribtonc.entries
+
+ETC_CDLS = \
+	$(ETCDIR)/gfs_21-24.cdl \
+	$(ETCDIR)/sst_61-64.cdl \
+	$(ETCDIR)/sst_21-24.cdl \
+	$(ETCDIR)/gfs_25-26.cdl \
+	$(ETCDIR)/ecmwf_1-12.cdl \
+	$(ETCDIR)/ocean_21-24.cdl \
+	$(ETCDIR)/ruc_211.cdl \
+	$(ETCDIR)/ruc2_236.cdl \
+	$(ETCDIR)/ngm_211.cdl \
+	$(ETCDIR)/eta_211.cdl \
+	$(ETCDIR)/gfs_211.cdl \
+	$(ETCDIR)/gfs_37-44.cdl \
+	$(ETCDIR)/ukmet_37-44.cdl \
+	$(ETCDIR)/gribtonc.entries 
+
+all :
+
+install:
+	@if [ -n "$(ETCFILES)" ]; then \
+	    etcfiles="$(ETCFILES)"; \
+	    for etcfile in $$etcfiles; do \
+		$(MAKE) $(MFLAGS) $(LOCAL_MACROS) \
+		    ETCDIR=$(ETCDIR) ETCF=$$etcfile \
+		    installed_etcfile_backup || exit 1; \
+	    done; \
+	else \
+	    : ; \
+	fi
+
+include ../../port/master.mk
+
+# The following target decouples the previous targets from the actual rule;
+# thus, eliminating extraneous make(1) messages.
+#
+installed_etcfile_backup:	$(ETCDIR)/$(ETCF)
+
+# The following makes a backup copy of the currently installed CDL file if
+# the one we are about to install is different, unless a backup file already
+# exists.  In the latter case, we leave the existing backup file alone.
+# Then we install the new CDL file, if it doesn't exist or it's different
+# from the currently installed CDL file.
+#
+$(ETCDIR)/$(ETCF):	$(ETCDIR) $(ETCF) FORCE
+	@if [ ! -f $@ -o -f $@.bak ] || cmp -s $@ $(ETCF) ; then \
+	    : ; \
+	else \
+	    echo "backing up $@ to $@.bak ..."; \
+	    mv $@ $@.bak; \
+	fi
+	@if [ -f $@ ] ; then \
+	    cmp -s $@ $(ETCF) || \
+		echo "updating $@" && cp $(ETCF) $@ ; \
+	else \
+	    echo "updating $@" && cp $(ETCF) $@ ; \
+	fi

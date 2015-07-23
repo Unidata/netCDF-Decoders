@@ -1,0 +1,218 @@
+# $Id: Makefile.in,v 1.16 2002/12/05 20:34:16 rkambic Exp $
+#
+#	Development Makefile for GRIB decoders, "gribdump" and "gribtonc"
+#
+
+.POSIX:
+
+PROGRAMS	= $(GRIBDUMP) $(GRIBTONC) $(GRIBTOCDL)
+cpp_netcdf	= @CPP_NETCDF@
+cpp_udunits	= @CPP_UDUNITS@
+cpp_ulog	= @CPP_ULOG@
+
+CPPFLAGS	= $(cpp_netcdf) $(cpp_udunits) @CPPFLAGS@
+CFLAGS		= @CFLAGS@
+MANIFEST	= Makefile.in $(HEADERS) $(COMMON_SOURCES) $(GRIBDUMP_SOURCES) \
+		  $(GRIBTOCDL_SOURCES) $(GRIBTONC_SOURCES) $(MANUALS) test.sh \
+		  depend tests/gribs.br tests/gribs.dec tests/gribs.wmo \
+		  tests/quasi.dec tests/quasi.wmo
+MANUALS		= gribdump.1 gribtonc.1 gribtocdl.1
+
+SUBDIRS		= cdl
+SUBDIR_TARGETS	= cdl/install
+
+ld_netcdf = @LD_NETCDF@
+ld_udunits = @LD_UDUNITS@
+ld_ulog	   =  @LD_RPC@
+
+prefix		= ../..
+GARBAGE		= $(PROGRAMS) gribs.br gribs.dec quasi.dec
+
+LIBS = -lm @LIBS@
+
+PURIFY = purify
+
+GRIBDUMP = gribdump
+GRIBTOCDL = gribtocdl
+GRIBTONC = gribtonc
+
+HEADERS = \
+	centers.h \
+	emalloc.h \
+	gbds.h \
+	gbytem.h \
+	gdes.h \
+	gds.h \
+	get_prod.h \
+	grib1.h \
+	gribtypes.h \
+	inetutil.h \
+	levels.h \
+	mkdirs_open.h \
+	models.h \
+	nc.h \
+	ncfloat.h \
+	nuwg.h \
+	params.h \
+	product_data.h \
+	recs.h \
+	quasi.h \
+	test_noserc.h \
+	timeunits.h \
+	ulog.h \
+	units.h \
+        user_param.h
+
+COMMON_SOURCES = \
+	emalloc.c \
+	gbds.c \
+	gbytem.c \
+	gdes.c \
+	get_prod.c \
+	grib1.c \
+	gribtypes.c \
+	inetutil.c \
+	levels.c \
+	params.c \
+	product_data.c \
+	quasi.c \
+	timeunits.c \
+        user_param.c \
+	ulog.c
+
+COMMON_OBJS = \
+	emalloc.o \
+	gbds.o \
+	gbytem.o \
+	gdes.o \
+	get_prod.o \
+	grib1.o \
+	gribtypes.o \
+	inetutil.o \
+	levels.o \
+	params.o \
+	product_data.o \
+	quasi.o \
+	timeunits.o \
+        user_param.o \
+	ulog.o
+
+GRIBDUMP_SOURCES = \
+	centers.c \
+	gribdump.c \
+	models.c
+
+GRIBDUMP_SRCS = \
+	$(COMMON_SOURCES) \
+	$(GRIBDUMP_SOURCES)
+
+GRIBDUMP_OBJS =  \
+	$(COMMON_OBJS) \
+	centers.o \
+	gribdump.o \
+	models.o
+
+GRIBTOCDL_SOURCES = \
+	gribtocdl.c \
+	centers.c \
+	models.c
+
+GRIBTOCDL_SRCS = \
+	$(COMMON_SOURCES) \
+	$(GRIBTOCDL_SOURCES)
+
+GRIBTOCDL_OBJS =  \
+	$(COMMON_OBJS) \
+	centers.o \
+	gribtocdl.o \
+	models.o
+
+GRIBTONC_SOURCES = \
+	gribtonc.c \
+	mkdirs_open.c \
+	nc.c \
+	ncfloat.c \
+	nuwg.c \
+	recs.c \
+	units.c
+
+GRIBTONC_SRCS = \
+	$(COMMON_SOURCES) \
+	$(GRIBTONC_SOURCES)
+
+GRIBTONC_OBJS = \
+	$(COMMON_OBJS) \
+	gribtonc.o \
+	mkdirs_open.o \
+	nc.o \
+	ncfloat.o \
+	nuwg.o \
+	recs.o \
+	units.o
+
+SOURCES = $(COMMON_SOURCES) $(GRIBDUMP_SOURCES) $(GRIBTONC_SOURCES) gribtocdl.c
+
+all : $(GRIBDUMP) $(GRIBTONC) $(GRIBTOCDL)
+
+test:	$(GRIBDUMP) FORCE
+	@./test.sh
+
+ulog.o : ulog.c
+	$(CC) -c $(CFLAGS) $(cpp_ulog) $(CPPFLAGS) $<
+
+$(GRIBDUMP): $(GRIBDUMP_OBJS)
+	$(CC) $(CFLAGS) $(GRIBDUMP_OBJS) $(ld_ulog) $(LIBS) -o $@
+
+$(GRIBTOCDL): $(GRIBTOCDL_OBJS)
+	$(CC) $(CFLAGS) $(GRIBTOCDL_OBJS) $(ld_ulog) $(LIBS) -o $@
+
+$(GRIBTONC):  $(GRIBTONC_OBJS)
+	$(CC) $(CFLAGS) $(GRIBTONC_OBJS) \
+	      $(ld_netcdf) $(ld_ulog) $(ld_udunits) $(LIBS) -o $@
+
+$(GRIBDUMP).pure : $(GRIBDUMP_OBJS)
+	$(PURIFY) $(CC) $(CFLAGS) $(GRIBDUMP_OBJS) $(LIBS) -o $@
+
+$(GRIBTOCDL).pure : $(GRIBTOCDL_OBJS)
+	$(PURIFY) $(CC) $(CFLAGS) $(GRIBTOCDL_OBJS) $(LIBS) -o $@
+
+$(GRIBTONC).pure :	$(GRIBTONC_OBJS)
+	$(PURIFY) $(CC) $(CFLAGS) $(GRIBTONC_OBJS) \
+	      $(ld_netcdf) $(ld_ulog) $(ld_udunits) $(LIBS) -o $@
+
+$(GRIBDUMP)_oc : $(GRIBDUMP_SRCS)
+	#setopt primary_language C
+	#load -C $(CPPFLAGS) $(GRIBDUMP_SRCS)
+	#load -C $(LIBS)
+	#setopt program_name gribdump
+
+$(GRIBTOCDL)_oc : $(GRIBTOCDL_SRCS)
+	#setopt primary_language C
+	#load -C $(CPPFLAGS) $(GRIBTOCDL_SRCS)
+	#load -C $(LIBS)
+	#setopt program_name gribtocdl
+
+$(GRIBTONC)_oc : $(GRIBTONC_SRCS)
+	#setopt primary_language C
+	#load -C $(CPPFLAGS) $(GRIBTONC_SRCS)
+	#load -C $(ld_netcdf) $(ld_ulog) $(ld_udunits) $(LIBS)
+	#setopt program_name gribtonc
+
+TAGS : $(HEADERS) $(SOURCES)
+	etags -T $(HEADERS) $(SOURCES)
+
+prototypes : $(SOURCES)
+	$(CC) $(CFLAGS) $(CPPFLAGS) $(SOURCES)
+
+clean:	FORCE
+	rm -f $(GRIBTONC) $(GRIBDUMP) $(GRIBTOCDL) a.out core *.o *.i *.a *.so.* *.sa.* \
+	    *.so *.u *.pure *.pure_hardlink *.pure_linkinfo conftest* \
+	    config.cache *.gz *.log tags *~
+
+install:	installed_programs installed_manuals cdl/install
+
+include ../port/master.mk
+
+### Everything after the following line might be overwritten ###
+### DO NOT DELETE THIS LINE.  make depend DEPENDS ON IT ###
+include depend

@@ -1,0 +1,32 @@
+# Makefile for the LDM decoders.
+#
+# $Id: Makefile.in,v 1.23 2004/06/30 19:55:22 rkambic Exp $
+
+.POSIX:
+
+PACKAGE		= decoders
+
+SUBDIRS		= gribtonc port 
+
+SUBDIR_TARGETS	=  \
+		  gribtonc/all gribtonc/test gribtonc/install \
+		  gribtonc/clean gribtonc/distclean \
+		  port/all
+
+MANIFEST	= COPYRIGHT CUSTOMIZE INSTALL Makefile.in \
+		  configure configure.in aclocal.m4 VERSION \
+		  RELEASE-NOTES 
+
+all:		gribtonc/all 
+
+test:		gribtonc/test
+
+install:	gribtonc/install
+
+clean:		gribtonc/clean
+
+distclean:	gribtonc/distclean
+
+realclean:	gribtonc/distclean
+
+include port/master.mk
