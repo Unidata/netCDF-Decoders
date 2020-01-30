@@ -2,7 +2,7 @@ NetCDF-Decoders
 ===================
 Greetings!  This file briefly describes the Unidata netCDF Decoders package.
 
-###Table of Contents
+### Table of Contents
 * [Notice of Deprecation](#Notice_of_Deprecation)
 * [Introduction](#Introduction)
 * [Installation](#Installation)
