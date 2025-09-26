@@ -32,9 +32,9 @@ If needed, reference the [CUSTOMIZE](src/CUSTOMIZE) file for instructions on how
 
 The Unidata Program Center is **no longer providing support** for the netCDF Decoders  package.
 
-However, you can also view past [netCDF Decoders support questions]( http://www.unidata.ucar.edu/support/help/MailArchives/decoders/) answered by Unidata developers in an archive maintained by Unidata as a courtesy to our users.
+However, you can also view past [netCDF Decoders support questions]( http://support.unidata.ucar.edu/archives/decoders/) answered by Unidata developers in an archive maintained by Unidata as a courtesy to our users.
 
 **Defunct Mailing List**
 
-The netCDF Decoders had a community mailing list associated with it at one time. The mailing list is **no longer active**, but the [list archive](http://www.unidata.ucar.edu/mailing_lists/archives/decoders/) is still available for reference.
+The netCDF Decoders had a community mailing list associated with it at one time. The mailing list is **no longer active**, but the [list archive](http://mailinglists.unidata.ucar.edu/archives/decoders/) is still available for reference.
 
